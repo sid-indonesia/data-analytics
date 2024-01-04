@@ -219,7 +219,8 @@ WHERE
   "encounter_type" = 'BKKBN_VISIT' OR
   "encounter_type" = 'CADRE_VISIT'
 ORDER BY
-  "res_published" DESC;
+  "res_published" DESC,
+  "pid" DESC;
 -- Suggestion: Change ownership of the (materialized) view to owner_materialized_views
 ALTER
 MATERIALIZED
