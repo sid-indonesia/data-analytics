@@ -130,7 +130,7 @@ DECLARE the_queries TEXT;
 BEGIN EXECUTE format (
   $ex$
   SELECT string_agg(
-       'REFRESH MATERIALIZED VIEW CONCURRENTLY"' || schemaname || '"."' || relname || '";',
+       'REFRESH MATERIALIZED VIEW CONCURRENTLY "' || schemaname || '"."' || relname || '";',
        E'\n' ORDER BY refresh_order) AS script
   FROM "${schemaName}".mat_view_refresh_order
 $ex$
