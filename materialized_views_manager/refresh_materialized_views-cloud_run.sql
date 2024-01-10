@@ -1,12 +1,3 @@
--- Copied from https://wiki.postgresql.org/wiki/Refresh_All_Materialized_Views
--- Notes:
--- Commented `owneroid`, `ownername` due to insufficient permissions to access table `pg_authid`
--- SQL Error [42501]: ERROR: permission denied for table pg_authid
-
--- Change the values (if needed) and execute these first to assign non-dynamic variables in DBeaver (can be executed per line, not yet know if can be bulk). Reference: https://dbeaver.com/docs/dbeaver/Client-Side-Scripting/
-@set schemaName = analytics
-
--- Refresh Materialized Views
 CREATE OR REPLACE VIEW "${schemaName}".mat_view_dependencies AS
 WITH RECURSIVE s(start_schemaname,start_relname,start_relkind,
 		 schemaname,relname,relkind,reloid,
@@ -79,58 +70,6 @@ ALTER
 VIEW
 "${schemaName}".mat_view_refresh_order
 OWNER TO owner_materialized_views;
-
---
---
--- Refreshing all materialized views (PL/PGSQL)
-SELECT string_agg(
-       'REFRESH MATERIALIZED VIEW "' || schemaname || '"."' || relname || '";',
-       E'\n' ORDER BY refresh_order) AS script
-FROM "${schemaName}".mat_view_refresh_order \gset
-
--- Visualize the script
-\echo :script
-
--- Execute the script
-:script
-
---
---
--- Refreshing just the materialized views in a particular schema
-SELECT string_agg(
-       'REFRESH MATERIALIZED VIEW "' || schemaname || '"."' || relname || '";',
-       E'\n' ORDER BY refresh_order) AS script
-FROM "${schemaName}".mat_view_refresh_order WHERE schemaname='myschema' \gset
-
--- Visualize the script
-\echo :script
-
--- Execute the script
-:script
-
---
---
--- Refreshing just the materialized views that depend on particular tables
-WITH b AS (
--- Select the highest depth of each mat view name
-SELECT DISTINCT ON (schemaname,relname) schemaname, relname, depth
-FROM "${schemaName}".mat_view_dependencies
-WHERE relkind='m' AND 
-      (start_schemaname,start_relname) IN (('schema1','table1'),('schema2','table2'))
-ORDER BY schemaname, relname, depth DESC
-)
-SELECT string_agg(
-       'REFRESH MATERIALIZED VIEW "' || schemaname || '"."' || relname || '";',
-       E'\n' ORDER BY depth) AS script
-FROM b \gset
-
--- Visualize the script
-\echo :script
-
--- Execute the script
-:script
-
-
 
 --
 -- 
