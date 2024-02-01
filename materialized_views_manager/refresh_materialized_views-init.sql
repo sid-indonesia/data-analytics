@@ -79,3 +79,29 @@ ALTER
 VIEW
 "${schemaName}".mat_view_refresh_order
 OWNER TO owner_materialized_views;
+
+--
+-- 
+-- Function to Refresh All Materialized Views
+CREATE OR REPLACE FUNCTION "${schemaName}".refresh_all_materialized_views_in_correct_order() RETURNS TEXT LANGUAGE plpgsql AS $$
+DECLARE the_queries TEXT;
+BEGIN EXECUTE format (
+  $ex$
+  SELECT string_agg(
+       'REFRESH MATERIALIZED VIEW CONCURRENTLY "' || schemaname || '"."' || relname || '";',
+       E'\n' ORDER BY refresh_order) AS script
+  FROM "${schemaName}".mat_view_refresh_order
+$ex$
+) INTO the_queries;
+EXECUTE format(
+  $ex$
+  %1$s $ex$,
+    the_queries
+);
+RETURN the_queries;
+END $$;
+
+ALTER
+FUNCTION
+"${schemaName}".refresh_all_materialized_views_in_correct_order
+OWNER TO owner_materialized_views;
