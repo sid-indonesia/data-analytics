@@ -60,7 +60,7 @@ FROM
         SELECT
           MAX("pid") :: text AS "pid"
         FROM
-          "generated_views"."Encounter_all_versions_view"
+          "user_defined_views"."Encounter_all_versions_view"
         GROUP BY
           "res_id"
         ) "latest_res"
@@ -79,7 +79,7 @@ FROM
           "Encounter.participant" :: jsonb -> 0 -> 'individual' ->> 'reference' AS "practitioner_reference",
           "Encounter.participant" :: jsonb -> 1 -> 'individual' ->> 'reference' AS "related_person_reference"
         FROM
-          "generated_views"."Encounter_all_versions_view"
+          "user_defined_views"."Encounter_all_versions_view"
         ) "Encounter" ON "latest_res"."pid" = "Encounter"."pid"
     ) "Encounter"
 LEFT JOIN
@@ -98,7 +98,7 @@ LEFT JOIN
         SELECT
           MAX("pid") :: text AS "pid"
         FROM
-          "generated_views"."Patient_all_versions_view"
+          "user_defined_views"."Patient_all_versions_view"
         GROUP BY
           "res_id"
         ) "latest_res"
@@ -132,7 +132,7 @@ LEFT JOIN
         --   "Patient.identifier" :: jsonb -> 0 ->> 'value' AS "patient_id",
           "Patient.name" :: jsonb -> 0 ->> 'text' AS "patient_name"
         FROM
-          "generated_views"."Patient_all_versions_view"
+          "user_defined_views"."Patient_all_versions_view"
         ) "Patient" ON "latest_res"."pid" = "Patient"."pid"
     ) "Patient" ON "Encounter"."patient_reference" = "Patient"."patient_reference"
 LEFT JOIN
@@ -145,7 +145,7 @@ LEFT JOIN
         SELECT
           MAX("pid") :: text AS "pid"
         FROM
-          "generated_views"."Organization_all_versions_view"
+          "user_defined_views"."Organization_all_versions_view"
         GROUP BY
           "res_id"
         ) "latest_res"
@@ -156,7 +156,7 @@ LEFT JOIN
           "Organization.referenceString" AS "organization_reference",
           "Organization.name" AS "organization_puskesmas"
         FROM
-          "generated_views"."Organization_all_versions_view"
+          "user_defined_views"."Organization_all_versions_view"
         ) "Organization" ON "latest_res"."pid" = "Organization"."pid"
     ) "Organization" ON "Encounter"."organization_reference" = "Organization"."organization_reference"
 LEFT JOIN
@@ -171,7 +171,7 @@ LEFT JOIN
         SELECT
           MAX("pid") :: text AS "pid"
         FROM
-          "generated_views"."Practitioner_all_versions_view"
+          "user_defined_views"."Practitioner_all_versions_view"
         GROUP BY
           "res_id"
         ) "latest_res"
@@ -184,7 +184,7 @@ LEFT JOIN
           "Practitioner.name" :: jsonb -> 0 ->> 'text' AS "practitioner_name",
           "Practitioner.qualification" :: jsonb -> 0 -> 'code' -> 'coding' -> 0 ->> 'display' AS "practitioner_type"
         FROM
-          "generated_views"."Practitioner_all_versions_view"
+          "user_defined_views"."Practitioner_all_versions_view"
         ) "Practitioner" ON "latest_res"."pid" = "Practitioner"."pid"
     ) "Practitioner" ON "Encounter"."practitioner_reference" = "Practitioner"."practitioner_reference"
 LEFT JOIN
@@ -199,7 +199,7 @@ LEFT JOIN
         SELECT
           MAX("pid") :: text AS "pid"
         FROM
-          "generated_views"."RelatedPerson_all_versions_view"
+          "user_defined_views"."RelatedPerson_all_versions_view"
         GROUP BY
           "res_id"
         ) "latest_res"
@@ -212,7 +212,7 @@ LEFT JOIN
           "RelatedPerson.relationship" :: jsonb -> 0 ->> 'text' AS "related_person_relationship",
           "RelatedPerson.telecom" :: jsonb -> 0 ->> 'value' AS "related_person_telecom"
         FROM
-          "generated_views"."RelatedPerson_all_versions_view"
+          "user_defined_views"."RelatedPerson_all_versions_view"
         ) "RelatedPerson" ON "latest_res"."pid" = "RelatedPerson"."pid"
     ) "RelatedPerson" ON "Encounter"."related_person_reference" = "RelatedPerson"."related_person_reference"
 WHERE
@@ -221,6 +221,7 @@ WHERE
 ORDER BY
   "res_published" DESC,
   "pid" DESC;
+
 -- Suggestion: Change ownership of the (materialized) view to owner_materialized_views
 ALTER
 MATERIALIZED
