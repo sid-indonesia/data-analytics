@@ -1,8 +1,8 @@
 -- Login with "materialized_views_manager" to run these, ensure connected DB is correct
 -- Change the values (if needed) and execute these first to assign non-dynamic variables in DBeaver (can be executed per line, not yet know if can be bulk). Reference: https://dbeaver.com/docs/dbeaver/Client-Side-Scripting/
-@set schemaName = analytics
+@set schemaName = user_defined_views
 @set viewName = Some Analysis Indicators
-@set userNamesToBeGrantedReadPermissions = "metabase_scraper", "readonly_opensrp"
+@set userNamesToBeGrantedReadPermissions = "metabase_scraper"
 
 CREATE SCHEMA IF NOT EXISTS "${schemaName}" AUTHORIZATION owner_materialized_views;
 
