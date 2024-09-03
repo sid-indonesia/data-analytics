@@ -2,7 +2,7 @@
 
 -- Change the values (if needed) and execute these first to assign non-dynamic variables in DBeaver (can be executed per line, not yet know if can be bulk). Reference: https://dbeaver.com/docs/dbeaver/Client-Side-Scripting/
 @set schemaName = user_defined_views
-@set userNamesToBeGrantedReadPermissions = "metabase_scraper", "readonly", "owner_materialized_views"
+@set userNamesToBeGrantedReadPermissions = "metabase_scraper", "owner_materialized_views", "bigquery_scraper", "readonly_opensrp", "fhir_data_pipes" --, "readonly" 
 
 --
 -- PostgreSQL database dump
@@ -1406,18 +1406,21 @@ ALTER TABLE ${schemaName}."Task_all_versions_view" OWNER TO owner_materialized_v
 GRANT USAGE ON
 SCHEMA
 "${schemaName}"
-TO ${userNamesToBeGrantedReadPermissions};
+TO ${userNamesToBeGrantedReadPermissions}
+;
 
 GRANT
 SELECT
 	ON
 	ALL TABLES IN SCHEMA
     "${schemaName}"
-TO ${userNamesToBeGrantedReadPermissions};
+TO ${userNamesToBeGrantedReadPermissions}
+;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA
 "${schemaName}"
 GRANT
 SELECT
 	ON
-	TABLES TO ${userNamesToBeGrantedReadPermissions};
+	TABLES TO ${userNamesToBeGrantedReadPermissions}
+;
