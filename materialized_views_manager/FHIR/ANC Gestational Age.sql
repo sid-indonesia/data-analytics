@@ -3,7 +3,7 @@
 -- Change the values (if needed) and execute these first to assign non-dynamic variables in DBeaver (can be executed per line, not yet know if can be bulk). Reference: https://dbeaver.com/docs/dbeaver/Client-Side-Scripting/
 @set schemaName = analytics
 @set viewName = ANC Gestational Age
-@set userNamesToBeGrantedReadPermissions = "metabase_scraper", "readonly", "owner_materialized_views" --, "sas_readonly", "read_only"
+@set userNamesToBeGrantedReadPermissions = "metabase_scraper", "owner_materialized_views", "bigquery_scraper", "readonly_opensrp", "fhir_data_pipes" --, "readonly", "sas_readonly", "read_only"
 
 CREATE SCHEMA IF NOT EXISTS "${schemaName}" AUTHORIZATION owner_materialized_views;
 
